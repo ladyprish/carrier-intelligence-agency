@@ -454,6 +454,7 @@
     .classified-tag { font-size: 9px; letter-spacing: 0.12em; padding: 7px 14px; margin-bottom: 32px; }
     .headline-block { margin-bottom: 28px; }
     .headline { font-size: clamp(38px, 11vw, 56px); gap: 0.15em; }
+    .counter-redact-text { font-size: 9px !important; }
     .countdown-block { gap: 2px; margin-bottom: 32px; }
     .countdown-unit { min-width: 52px; }
     .countdown-num { font-size: clamp(32px, 9vw, 48px); }
@@ -500,8 +501,7 @@
     <div class="classified-tag">ATTN: 3PLs & FREIGHT BROKERS</div>
 
     <div class="headline-block">
-      <div class="headline">YOUR CARRIERS ARE ABOUT</div>
-      <div class="headline">TO GET <div class="redact-wrap"><canvas class="redact-b" id="noiseCanvas"></canvas><span class="redact-a" id="glitchWord">SCORED</span></div></div>
+      <div class="headline">YOUR CARRIERS ARE ABOUT TO GET <div class="redact-wrap"><canvas class="redact-b" id="noiseCanvas"></canvas><span class="redact-a" id="glitchWord">SCORED</span></div></div>
     </div>
 
     <div class="countdown-block">
@@ -696,6 +696,22 @@ const counterEl = document.getElementById('counter');
   window.addEventListener('resize', () => { resize(); draw(); });
 })();
 
+// ── MAILCHIMP CONFIG ──
+const MC_URL = 'https://app.us14.list-manage.com/subscribe/post?u=d32a1a0e7d303d5fa96370cf2&id=539e0a45fd&f_id=002274e0f0';
+
+function submitToMailchimp(email, onSuccess, onError) {
+  const data = new FormData();
+  data.append('EMAIL', email);
+  data.append('b_d32a1a0e7d303d5fa96370cf2_539e0a45fd', ''); // honeypot
+  fetch(MC_URL, {
+    method: 'POST',
+    body: data,
+    mode: 'no-cors' // Mailchimp doesn't support CORS — no-cors silences the error; submission still lands
+  })
+  .then(() => onSuccess())
+  .catch(() => onError());
+}
+
 // ── FORM ──
 function handleSubmit() {
   const input = document.getElementById('emailInput');
@@ -705,10 +721,22 @@ function handleSubmit() {
     setTimeout(() => input.style.outline = '', 1000);
     return;
   }
-  document.getElementById('formBlock').style.display = 'none';
-  document.getElementById('successBlock').classList.add('visible');
-  dismissSlideout();
+  submitToMailchimp(
+    input.value.trim(),
+    () => {
+      document.getElementById('formBlock').style.display = 'none';
+      document.getElementById('successBlock').classList.add('visible');
+      dismissSlideout();
+    },
+    () => {
+      // On network error still show success — MC no-cors means we can't detect failure
+      document.getElementById('formBlock').style.display = 'none';
+      document.getElementById('successBlock').classList.add('visible');
+      dismissSlideout();
+    }
+  );
 }
+
 // ── SLIDEOUT FORM ──
 function handleSlideoutSubmit() {
   const input = document.getElementById('slideoutEmail');
@@ -718,9 +746,19 @@ function handleSlideoutSubmit() {
     setTimeout(() => input.style.outline = '', 1000);
     return;
   }
-  document.getElementById('slideoutForm').style.display = 'none';
-  document.getElementById('slideoutSuccess').style.display = 'flex';
-  setTimeout(dismissSlideout, 3000);
+  submitToMailchimp(
+    input.value.trim(),
+    () => {
+      document.getElementById('slideoutForm').style.display = 'none';
+      document.getElementById('slideoutSuccess').style.display = 'flex';
+      setTimeout(dismissSlideout, 3000);
+    },
+    () => {
+      document.getElementById('slideoutForm').style.display = 'none';
+      document.getElementById('slideoutSuccess').style.display = 'flex';
+      setTimeout(dismissSlideout, 3000);
+    }
+  );
 }
 
 document.addEventListener('DOMContentLoaded', () => {

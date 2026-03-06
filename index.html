@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Something is coming.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #050608;
+    --surface: #0b0d12;
+    --border: rgba(255,255,255,0.07);
+    --cyan: #00d4ff;
+    --cyan-dim: rgba(0, 212, 255, 0.15);
+    --text: #e8eaf0;
+    --muted: #5a6070;
+    --warning: #ff6b35;
+  }
+
+  html, body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    top: -20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 900px;
+    height: 600px;
+    background: radial-gradient(ellipse, rgba(0,212,255,0.07) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* TOP BAR */
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 48px;
+    border-bottom: 1px solid var(--border);
+  }
+  .topbar-left {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--cyan);
+    letter-spacing: 0.1em;
+  }
+  .pulse-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--cyan);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  /* HERO */
+  .hero {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 64px 24px 80px;
+    text-align: center;
+  }
+
+  /* CLASSIFIED TAG */
+  .classified-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid rgba(0,212,255,0.3);
+    background: rgba(0,212,255,0.05);
+    padding: 8px 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--cyan);
+    text-transform: uppercase;
+    margin-bottom: 44px;
+    animation: fadeUp 0.9s 0.2s ease both;
+  }
+  .classified-tag::before, .classified-tag::after { content: '//'; opacity: 0.4; }
+
+  /* HEADLINE */
+  .headline-block {
+    margin-bottom: 36px;
+    animation: fadeUp 0.9s 0.4s ease both;
+  }
+  .headline {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 8.5vw, 110px);
+    line-height: 0.95;
+    letter-spacing: 0.02em;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.22em;
+  }
+
+  /* REDACT WRAPPER — stacks noise + text */
+  .redact-wrap {
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+    top: -4px;
+  }
+
+  /* PIXEL NOISE */
+  canvas.redact-b {
+    display: block;
+    image-rendering: pixelated;
+    border-radius: 2px;
+  }
+
+  /* SCRAMBLING LETTERS — centered over the canvas */
+  .redact-a {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78em;
+    color: var(--cyan);
+    letter-spacing: 0.1em;
+    text-shadow: 0 0 14px rgba(0,212,255,0.9), 0 0 32px rgba(0,212,255,0.5);
+  }
+
+  /* COUNTDOWN */
+  .countdown-block {
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+    margin-bottom: 44px;
+    animation: fadeUp 0.9s 0.55s ease both;
+  }
+  .countdown-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 72px;
+  }
+  .countdown-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 6vw, 64px);
+    color: var(--text);
+    line-height: 1;
+    letter-spacing: 0.03em;
+  }
+  .countdown-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+  .countdown-sep {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 6vw, 64px);
+    color: var(--muted);
+    line-height: 1;
+    opacity: 0.3;
+    padding: 0 2px;
+    animation: sepBlink 1s step-end infinite;
+  }
+  .countdown-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-top: 12px;
+    margin-bottom: 44px;
+    animation: fadeUp 0.9s 0.65s ease both;
+  }
+  .countdown-date span { color: var(--cyan); }
+
+  /* SUBHEAD */
+  .subhead {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    font-size: clamp(16px, 2.2vw, 21px);
+    color: var(--muted);
+    max-width: 720px;
+    line-height: 1.65;
+    margin-bottom: 14px;
+    animation: fadeUp 0.9s 0.7s ease both;
+  }
+  .subhead strong { color: var(--text); font-weight: 500; }
+
+  /* PAIN LINE */
+  .pain-line {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--warning);
+    letter-spacing: 0.05em;
+    margin-bottom: 56px;
+    opacity: 0.85;
+    animation: fadeUp 0.9s 0.8s ease both;
+    max-width: 600px;
+    text-align: center;
+    line-height: 1.8;
+  }
+
+  /* STATS */
+  .stats-row {
+    display: flex;
+    gap: 1px;
+    margin-bottom: 60px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    width: 100%;
+    max-width: 760px;
+    animation: fadeUp 0.9s 0.9s ease both;
+  }
+  .stat {
+    flex: 1;
+    padding: 22px 28px;
+    background: var(--surface);
+    text-align: left;
+  }
+  .stat:not(:last-child) { border-right: 1px solid var(--border); }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 38px;
+    color: var(--cyan);
+    letter-spacing: 0.03em;
+    line-height: 1;
+    margin-bottom: 5px;
+  }
+  .stat-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .stat-not {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--warning);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    opacity: 0.8;
+  }
+  .stat-source {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    opacity: 0.45;
+    text-transform: uppercase;
+  }
+
+  /* FORM */
+  .form-block {
+    width: 100%;
+    max-width: 520px;
+    animation: fadeUp 0.9s 1s ease both;
+  }
+  .form-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 12px;
+    text-align: left;
+  }
+  .form-row {
+    display: flex;
+    border: 1px solid rgba(0,212,255,0.25);
+    background: var(--surface);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .form-row:focus-within {
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 3px var(--cyan-dim), 0 0 30px rgba(0,212,255,0.1);
+  }
+  .form-row input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 16px 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    min-width: 0;
+  }
+  .form-row input::placeholder { color: var(--muted); }
+  .form-row button {
+    background: var(--cyan);
+    border: none;
+    padding: 0 28px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 0.08em;
+    color: var(--black);
+    cursor: pointer;
+    transition: background 0.15s;
+    white-space: nowrap;
+  }
+  .form-row button:hover { background: #33ddff; }
+  .form-note {
+    margin-top: 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .form-note::before { content: ''; width: 16px; height: 1px; background: var(--muted); flex-shrink: 0; }
+
+  /* SUCCESS */
+  .success-block { display: none; flex-direction: column; align-items: center; gap: 16px; }
+  .success-block.visible { display: flex; }
+  .success-icon {
+    width: 56px; height: 56px;
+    border: 1px solid var(--cyan);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--cyan); font-size: 24px;
+  }
+  .success-title { font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--cyan); letter-spacing: 0.05em; }
+  .success-msg { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); letter-spacing: 0.1em; text-align: center; line-height: 1.7; }
+
+  /* COUNTER */
+  .counter-block {
+    margin-top: 48px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    animation: fadeUp 0.9s 1.1s ease both;
+  }
+  .counter-num { color: var(--text); font-weight: 500; }
+
+  /* COUNTER REDACT */
+  .counter-redact-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+  }
+  .counter-redact-wrap canvas {
+    display: block;
+    image-rendering: pixelated;
+    border-radius: 2px;
+  }
+  .counter-redact-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--cyan);
+    letter-spacing: 0.12em;
+    white-space: nowrap;
+    text-shadow: 0 0 10px rgba(0,212,255,0.9), 0 0 24px rgba(0,212,255,0.5);
+    padding: 0 6px;
+  }
+
+  /* FOOTER */
+  .footer {
+    padding: 24px 48px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-left { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.12em; }
+  .footer-right-text { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.12em; text-align: right; }
+  .footer-right { display: flex; gap: 32px; }
+  .footer-right a {
+    font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted);
+    letter-spacing: 0.12em; text-decoration: none; transition: color 0.15s;
+  }
+  .footer-right a:hover { color: var(--cyan); }
+
+  /* OVERLAYS */
+  .scanlines {
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+    pointer-events: none; z-index: 100;
+  }
+  .corner { position: fixed; width: 40px; height: 40px; pointer-events: none; z-index: 2; opacity: 0.3; }
+  .corner-tl { top: 12px; left: 12px; border-top: 1px solid var(--cyan); border-left: 1px solid var(--cyan); }
+  .corner-tr { top: 12px; right: 12px; border-top: 1px solid var(--cyan); border-right: 1px solid var(--cyan); }
+  .corner-bl { bottom: 12px; left: 12px; border-bottom: 1px solid var(--cyan); border-left: 1px solid var(--cyan); }
+  .corner-br { bottom: 12px; right: 12px; border-bottom: 1px solid var(--cyan); border-right: 1px solid var(--cyan); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes pulse { 0%, 100% { opacity: 1; box-shadow: 0 0 6px var(--cyan); } 50% { opacity: 0.4; box-shadow: none; } }
+  @keyframes sepBlink { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.08; } }
+
+  /* MOBILE */
+  @media (max-width: 640px) {
+    .topbar { padding: 14px 20px; gap: 8px; }
+    .topbar-left { font-size: 9px; letter-spacing: 0.08em; }
+    .topbar-right { font-size: 9px; letter-spacing: 0.06em; white-space: nowrap; }
+    .hero { padding: 40px 20px 60px; }
+    .classified-tag { font-size: 9px; letter-spacing: 0.12em; padding: 7px 14px; margin-bottom: 32px; }
+    .headline-block { margin-bottom: 28px; }
+    .headline { font-size: clamp(38px, 11vw, 56px); gap: 0.15em; }
+    .countdown-block { gap: 2px; margin-bottom: 32px; }
+    .countdown-unit { min-width: 52px; }
+    .countdown-num { font-size: clamp(32px, 9vw, 48px); }
+    .countdown-sep { font-size: clamp(32px, 9vw, 48px); }
+    .countdown-label { font-size: 8px; letter-spacing: 0.1em; }
+    .countdown-date { font-size: 9px; margin-bottom: 32px; }
+    .subhead { font-size: clamp(15px, 4.2vw, 18px); max-width: 100%; margin-bottom: 12px; }
+    .pain-line { font-size: 11px; max-width: 100%; margin-bottom: 40px; letter-spacing: 0.03em; }
+    .stats-row { flex-direction: column; margin-bottom: 40px; }
+    .stat { padding: 16px 20px; }
+    .stat:not(:last-child) { border-right: none; border-bottom: 1px solid var(--border); }
+    .stat-num { font-size: 32px; }
+    .form-block { max-width: 100%; }
+    .form-row { flex-direction: column; }
+    .form-row input { padding: 14px 16px; }
+    .form-row button { padding: 14px; font-size: 16px; text-align: center; }
+    .counter-block { margin-top: 36px; }
+    .footer { padding: 20px; flex-direction: column; gap: 12px; text-align: center; }
+    .footer-right { gap: 20px; }
+    .corner { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="scanlines"></div>
+<div class="corner corner-tl"></div>
+<div class="corner corner-tr"></div>
+<div class="corner corner-bl"></div>
+<div class="corner corner-br"></div>
+
+<div class="page">
+
+  <header class="topbar">
+    <div class="topbar-left">CARRIER INTELLIGENCE AGENCY // RESTRICTED ACCESS</div>
+    <div class="topbar-right">
+      <div class="pulse-dot"></div>
+      LAUNCH IMMINENT
+    </div>
+  </header>
+
+  <main class="hero">
+
+    <div class="classified-tag">ATTN: 3PLs & FREIGHT BROKERS</div>
+
+    <div class="headline-block">
+      <div class="headline">YOUR CARRIERS ARE ABOUT</div>
+      <div class="headline">TO GET <div class="redact-wrap"><canvas class="redact-b" id="noiseCanvas"></canvas><span class="redact-a" id="glitchWord">SCORED</span></div></div>
+    </div>
+
+    <div class="countdown-block">
+      <div class="countdown-unit">
+        <div class="countdown-num" id="cdDays">91</div>
+        <div class="countdown-label">Days</div>
+      </div>
+      <div class="countdown-sep">:</div>
+      <div class="countdown-unit">
+        <div class="countdown-num" id="cdHours">00</div>
+        <div class="countdown-label">Hours</div>
+      </div>
+      <div class="countdown-sep">:</div>
+      <div class="countdown-unit">
+        <div class="countdown-num" id="cdMins">00</div>
+        <div class="countdown-label">Min</div>
+      </div>
+      <div class="countdown-sep">:</div>
+      <div class="countdown-unit">
+        <div class="countdown-num" id="cdSecs">00</div>
+        <div class="countdown-label">Sec</div>
+      </div>
+    </div>
+
+    <p class="countdown-date">LAUNCHING <span>JUNE 1, 2026</span></p>
+
+    <p class="subhead">
+      A new kind of intelligence is arriving for logistics teams who are sick and tired of guessing which carriers will perform — and which will burn them.
+    </p>
+
+    <p class="pain-line">↳ Your biggest line item is carrier costs — yet bad carrier selection is the norm and costs the industry billions annually. That changes soon.</p>
+
+    <div class="stats-row">
+      <div class="stat">
+        <div class="stat-not">NOT ANOTHER</div>
+        <div class="stat-num">Compliance</div>
+        <div class="stat-label">PLATFORM</div>
+      </div>
+      <div class="stat">
+        <div class="stat-not">NOT ANOTHER</div>
+        <div class="stat-num">Analytics</div>
+        <div class="stat-label">DASHBOARD</div>
+      </div>
+      <div class="stat">
+        <div class="stat-not">NOT ANOTHER</div>
+        <div class="stat-num">Workflow</div>
+        <div class="stat-label">AGENT</div>
+      </div>
+    </div>
+
+    <div class="form-block" id="formBlock">
+      <label class="form-label" for="emailInput">IDENTITY WITHHELD UNTIL LAUNCH</label>
+      <div class="form-row">
+        <input type="email" id="emailInput" placeholder="your@company.com" autocomplete="email" />
+        <button onclick="handleSubmit()">NOTIFY ME</button>
+      </div>
+      <p class="form-note">Be the First to Know</p>
+    </div>
+
+    <div class="success-block" id="successBlock">
+      <div class="success-icon">✓</div>
+      <div class="success-title">YOU'RE ON THE LIST</div>
+      <p class="success-msg">ACCESS CODE REGISTERED.<br>YOU'LL BE THE FIRST TO KNOW WHEN THE CURTAIN DROPS.</p>
+    </div>
+
+    <div class="counter-block">
+      <span>↗</span>
+      <div class="counter-redact-wrap">
+        <canvas id="counterCanvas"></canvas>
+        <span class="counter-redact-text"><span id="counter">1847</span> &nbsp;carrier sales teams already waiting</span>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <div class="footer-left">© 2026 Carrier Intelligence Agency is a fictional entity. True company identity to be revealed at launch.</div>
+  </footer>
+
+</div>
+
+<script>
+// ── COUNTDOWN TO JUNE 1, 2026 ──
+(function() {
+  const launch = new Date('2026-06-01T00:00:00');
+  function update() {
+    const now = new Date();
+    const diff = launch - now;
+    if (diff <= 0) {
+      ['cdDays','cdHours','cdMins','cdSecs'].forEach(id => document.getElementById(id).textContent = '00');
+      return;
+    }
+    document.getElementById('cdDays').textContent  = String(Math.floor(diff / 86400000)).padStart(2,'0');
+    document.getElementById('cdHours').textContent = String(Math.floor((diff % 86400000) / 3600000)).padStart(2,'0');
+    document.getElementById('cdMins').textContent  = String(Math.floor((diff % 3600000) / 60000)).padStart(2,'0');
+    document.getElementById('cdSecs').textContent  = String(Math.floor((diff % 60000) / 1000)).padStart(2,'0');
+  }
+  update();
+  setInterval(update, 1000);
+})();
+
+// ── SCRAMBLING LETTERS — only chars from SCORED ──
+(function() {
+  const el = document.getElementById('glitchWord');
+  const chars = 'SCORED';
+  setInterval(() => {
+    el.textContent = Array.from({length: 6}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+  }, 75);
+})();
+
+// ── PIXEL NOISE CANVAS ──
+(function() {
+  const canvas = document.getElementById('noiseCanvas');
+  const ctx = canvas.getContext('2d');
+
+  function resize() {
+    const fs = parseFloat(getComputedStyle(canvas.closest('.headline')).fontSize);
+    canvas.width  = Math.round(fs * 3.6);
+    canvas.height = Math.round(fs * 0.9);
+    canvas.style.width  = canvas.width + 'px';
+    canvas.style.height = canvas.height + 'px';
+  }
+
+  function draw() {
+    const w = canvas.width, h = canvas.height;
+    if (!w || !h) return;
+    const img = ctx.createImageData(w, h);
+    const d = img.data;
+    for (let i = 0; i < d.length; i += 4) {
+      if (Math.random() > 0.4) {
+        const bri = 0.2 + Math.random() * 0.8;
+        d[i] = 0; d[i+1] = Math.floor(210 * bri); d[i+2] = Math.floor(255 * bri);
+        d[i+3] = Math.floor(150 + Math.random() * 105);
+      } else {
+        d[i] = d[i+1] = d[i+2] = 0;
+        d[i+3] = Math.floor(Math.random() * 50);
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+  }
+
+  resize(); draw();
+  setInterval(draw, 55);
+  window.addEventListener('resize', () => { resize(); draw(); });
+})();
+
+// ── SCRAMBLING COUNTER ──
+const counterEl = document.getElementById('counter');
+(function() {
+  setInterval(() => {
+    counterEl.textContent = String(Math.floor(1000 + Math.random() * 9000));
+  }, 120);
+})();
+
+// ── COUNTER PIXEL NOISE CANVAS ──
+(function() {
+  const canvas = document.getElementById('counterCanvas');
+  const ctx = canvas.getContext('2d');
+  const textEl = document.querySelector('.counter-redact-text');
+
+  function resize() {
+    const fs = parseFloat(getComputedStyle(textEl).fontSize);
+    const w = Math.round(textEl.scrollWidth) + 28;
+    const h = Math.round(fs) + 8;
+    canvas.width = w;
+    canvas.height = h;
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+  }
+
+  function draw() {
+    const w = canvas.width, h = canvas.height;
+    if (!w || !h) return;
+    const img = ctx.createImageData(w, h);
+    const d = img.data;
+    for (let i = 0; i < d.length; i += 4) {
+      if (Math.random() > 0.4) {
+        const bri = 0.2 + Math.random() * 0.8;
+        d[i] = 0; d[i+1] = Math.floor(210 * bri); d[i+2] = Math.floor(255 * bri);
+        d[i+3] = Math.floor(150 + Math.random() * 105);
+      } else {
+        d[i] = d[i+1] = d[i+2] = 0;
+        d[i+3] = Math.floor(Math.random() * 50);
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+  }
+
+  // Wait for fonts/layout then size
+  setTimeout(() => { resize(); draw(); }, 200);
+  setInterval(draw, 55);
+  window.addEventListener('resize', () => { resize(); draw(); });
+})();
+
+// ── FORM ──
+function handleSubmit() {
+  const input = document.getElementById('emailInput');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value.trim())) {
+    input.style.outline = '2px solid #ff6b35';
+    input.focus();
+    setTimeout(() => input.style.outline = '', 1000);
+    return;
+  }
+  document.getElementById('formBlock').style.display = 'none';
+  document.getElementById('successBlock').classList.add('visible');
+  dismissSlideout();
+}
+// ── SLIDEOUT FORM ──
+function handleSlideoutSubmit() {
+  const input = document.getElementById('slideoutEmail');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value.trim())) {
+    input.style.outline = '2px solid #ff6b35';
+    input.focus();
+    setTimeout(() => input.style.outline = '', 1000);
+    return;
+  }
+  document.getElementById('slideoutForm').style.display = 'none';
+  document.getElementById('slideoutSuccess').style.display = 'flex';
+  setTimeout(dismissSlideout, 3000);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('emailInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleSubmit();
+  });
+  document.getElementById('slideoutEmail').addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleSlideoutSubmit();
+  });
+});
+
+function dismissSlideout() {
+  const panel = document.getElementById('slideout');
+  panel.classList.remove('visible');
+  sessionStorage.setItem('slideoutDismissed', '1');
+}
+
+// Show after 25 seconds if not already dismissed
+if (!sessionStorage.getItem('slideoutDismissed')) {
+  setTimeout(() => {
+    document.getElementById('slideout').classList.add('visible');
+  }, 15000);
+}
+</script>
+
+<!-- SLIDEOUT PANEL -->
+<div id="slideout" class="slideout">
+  <button class="slideout-close" onclick="dismissSlideout()">✕</button>
+  <div class="slideout-tag">// RESTRICTED ACCESS</div>
+  <p class="slideout-headline">Don't miss the launch.</p>
+  <p class="slideout-sub">Drop your email. Be the first to know.</p>
+  <div id="slideoutForm">
+    <div class="slideout-row">
+      <input type="email" id="slideoutEmail" placeholder="your@company.com" autocomplete="email" />
+      <button onclick="handleSlideoutSubmit()">IN</button>
+    </div>
+  </div>
+  <div id="slideoutSuccess" class="slideout-success">
+    <span>✓</span> YOU'RE ON THE LIST
+  </div>
+</div>
+
+<style>
+  /* SLIDEOUT */
+  .slideout {
+    position: fixed;
+    bottom: 32px;
+    right: -360px;
+    width: 320px;
+    background: #0b0d12;
+    border: 1px solid rgba(0,212,255,0.25);
+    padding: 28px 24px 24px;
+    z-index: 200;
+    transition: right 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow: -8px 0 40px rgba(0,0,0,0.6), 0 0 30px rgba(0,212,255,0.05);
+  }
+  .slideout.visible { right: 24px; }
+  .slideout-close {
+    position: absolute;
+    top: 12px; right: 14px;
+    background: none; border: none;
+    color: var(--muted); font-size: 12px;
+    cursor: pointer; line-height: 1;
+    transition: color 0.15s;
+  }
+  .slideout-close:hover { color: var(--text); }
+  .slideout-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--cyan);
+    letter-spacing: 0.2em;
+    margin-bottom: 12px;
+    opacity: 0.7;
+  }
+  .slideout-headline {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--text);
+    letter-spacing: 0.03em;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .slideout-sub {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 18px;
+    line-height: 1.5;
+  }
+  .slideout-row {
+    display: flex;
+    border: 1px solid rgba(0,212,255,0.25);
+    background: var(--surface);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    margin-bottom: 10px;
+  }
+  .slideout-row:focus-within {
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 2px var(--cyan-dim);
+  }
+  .slideout-row input {
+    flex: 1; background: transparent; border: none; outline: none;
+    padding: 12px 14px;
+    font-family: 'DM Sans', sans-serif; font-size: 13px;
+    color: var(--text); min-width: 0;
+  }
+  .slideout-row input::placeholder { color: var(--muted); }
+  .slideout-row button {
+    background: var(--cyan); border: none;
+    padding: 0 18px;
+    font-family: 'Bebas Neue', sans-serif; font-size: 16px;
+    letter-spacing: 0.08em; color: var(--black);
+    cursor: pointer; transition: background 0.15s;
+  }
+  .slideout-row button:hover { background: #33ddff; }
+  .slideout-note {
+    font-family: 'DM Mono', monospace; font-size: 9px;
+    color: var(--muted); letter-spacing: 0.1em;
+  }
+  .slideout-success {
+    display: none; align-items: center; gap: 10px;
+    font-family: 'Bebas Neue', sans-serif; font-size: 18px;
+    color: var(--cyan); letter-spacing: 0.08em;
+    padding: 8px 0;
+  }
+  @media (max-width: 640px) {
+    .slideout { width: calc(100vw - 32px); bottom: 16px; }
+    .slideout.visible { right: 16px; }
+  }
+</style>
+
+</body>
+</html>

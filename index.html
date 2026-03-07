@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Something is coming.</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -13,11 +13,11 @@
     --black: #050608;
     --surface: #0b0d12;
     --border: rgba(255,255,255,0.07);
-    --cyan: #00d4ff;
-    --cyan-dim: rgba(0, 212, 255, 0.15);
+    --cyan: #00E5FF;
+    --cyan-dim: rgba(0, 229, 255, 0.15);
     --text: #e8eaf0;
     --muted: #5a6070;
-    --warning: #ff6b35;
+    --warning: #E5FF00;
   }
 
   html, body {
@@ -32,8 +32,8 @@
     position: fixed;
     inset: 0;
     background-image:
-      linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px);
+      linear-gradient(rgba(0,229,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.025) 1px, transparent 1px);
     background-size: 60px 60px;
     pointer-events: none;
     z-index: 0;
@@ -47,7 +47,7 @@
     transform: translateX(-50%);
     width: 900px;
     height: 600px;
-    background: radial-gradient(ellipse, rgba(0,212,255,0.07) 0%, transparent 70%);
+    background: radial-gradient(ellipse, rgba(0,229,255,0.07) 0%, transparent 70%);
     pointer-events: none;
     z-index: 0;
   }
@@ -69,7 +69,7 @@
     border-bottom: 1px solid var(--border);
   }
   .topbar-left {
-    font-family: 'DM Mono', monospace;
+    font-family: 'Space Mono', monospace;
     font-size: 11px;
     color: var(--muted);
     letter-spacing: 0.15em;
@@ -79,7 +79,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    font-family: 'DM Mono', monospace;
+    font-family: 'Space Mono', monospace;
     font-size: 11px;
     color: var(--cyan);
     letter-spacing: 0.1em;
@@ -107,10 +107,10 @@
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    border: 1px solid rgba(0,212,255,0.3);
-    background: rgba(0,212,255,0.05);
+    border: 1px solid rgba(0,229,255,0.3);
+    background: rgba(0,229,255,0.05);
     padding: 8px 20px;
-    font-family: 'DM Mono', monospace;
+    font-family: 'Space Mono', monospace;
     font-size: 11px;
     letter-spacing: 0.2em;
     color: var(--cyan);
@@ -160,11 +160,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'DM Mono', monospace;
+    font-family: 'Space Mono', monospace;
     font-size: 0.78em;
     color: var(--cyan);
     letter-spacing: 0.1em;
-    text-shadow: 0 0 14px rgba(0,212,255,0.9), 0 0 32px rgba(0,212,255,0.5);
+    text-shadow: 0 0 14px rgba(0,229,255,0.9), 0 0 32px rgba(0,229,255,0.5);
   }
 
   /* COUNTDOWN */
@@ -189,7 +189,7 @@
     letter-spacing: 0.03em;
   }
   .countdown-label {
-    font-family: 'DM Mono', monospace;
+    font-family: 'Space Mono', monospace;
     font-size: 9px;
     color: var(--muted);
     letter-spacing: 0.18em;
@@ -206,7 +206,7 @@
     animation: sepBlink 1s step-end infinite;
   }
   .countdown-date {
-    font-family: 'DM Mono', monospace;
+    font-family: 'Space Mono', monospace;
     font-size: 10px;
     color: var(--muted);
     letter-spacing: 0.15em;
@@ -232,7 +232,7 @@
 
   /* PAIN LINE */
   .pain-line {
-    font-family: 'DM Mono', monospace;
+    font-family: 'Space Mono', monospace;
     font-size: 12px;
     color: var(--warning);
     letter-spacing: 0.05em;
@@ -279,7 +279,7 @@
     line-height: 1;
   }
   .stat-not {
-    font-family: 'DM Mono', monospace;
+    font-family: 'Space Mono', monospace;
     font-size: 9px;
     color: var(--warning);
     letter-spacing: 0.2em;
@@ -288,7 +288,7 @@
     opacity: 0.8;
   }
   .stat-source {
-    font-family: 'DM Mono', monospace;
+    font-family: 'Space Mono', monospace;
     font-size: 8px;
     color: var(--muted);
     letter-spacing: 0.08em;
@@ -303,7 +303,7 @@
     animation: fadeUp 0.9s 1s ease both;
   }
   .form-label {
-    font-family: 'DM Mono', monospace;
+    font-family: 'Space Mono', monospace;
     font-size: 11px;
     color: var(--muted);
     letter-spacing: 0.15em;
@@ -314,13 +314,13 @@
   }
   .form-row {
     display: flex;
-    border: 1px solid rgba(0,212,255,0.25);
+    border: 1px solid rgba(0,229,255,0.25);
     background: var(--surface);
     transition: border-color 0.2s, box-shadow 0.2s;
   }
   .form-row:focus-within {
     border-color: var(--cyan);
-    box-shadow: 0 0 0 3px var(--cyan-dim), 0 0 30px rgba(0,212,255,0.1);
+    box-shadow: 0 0 0 3px var(--cyan-dim), 0 0 30px rgba(0,229,255,0.1);
   }
   .form-row input {
     flex: 1;
@@ -349,7 +349,7 @@
   .form-row button:hover { background: #33ddff; }
   .form-note {
     margin-top: 12px;
-    font-family: 'DM Mono', monospace;
+    font-family: 'Space Mono', monospace;
     font-size: 10px;
     color: var(--muted);
     letter-spacing: 0.1em;
@@ -369,7 +369,7 @@
     color: var(--cyan); font-size: 24px;
   }
   .success-title { font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--cyan); letter-spacing: 0.05em; }
-  .success-msg { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); letter-spacing: 0.1em; text-align: center; line-height: 1.7; }
+  .success-msg { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--muted); letter-spacing: 0.1em; text-align: center; line-height: 1.7; }
 
   /* COUNTER */
   .counter-block {
@@ -377,7 +377,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    font-family: 'DM Mono', monospace;
+    font-family: 'Space Mono', monospace;
     font-size: 12px;
     color: var(--muted);
     letter-spacing: 0.08em;
@@ -402,12 +402,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'DM Mono', monospace;
+    font-family: 'Space Mono', monospace;
     font-size: 12px;
     color: var(--cyan);
     letter-spacing: 0.12em;
     white-space: nowrap;
-    text-shadow: 0 0 10px rgba(0,212,255,0.9), 0 0 24px rgba(0,212,255,0.5);
+    text-shadow: 0 0 10px rgba(0,229,255,0.9), 0 0 24px rgba(0,229,255,0.5);
     padding: 0 6px;
   }
 
@@ -419,11 +419,11 @@
     justify-content: space-between;
     align-items: center;
   }
-  .footer-left { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.12em; }
-  .footer-right-text { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.12em; text-align: right; }
+  .footer-left { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.12em; }
+  .footer-right-text { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.12em; text-align: right; }
   .footer-right { display: flex; gap: 32px; }
   .footer-right a {
-    font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted);
+    font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted);
     letter-spacing: 0.12em; text-decoration: none; transition: color 0.15s;
   }
   .footer-right a:hover { color: var(--cyan); }
@@ -501,7 +501,8 @@
     <div class="classified-tag">ATTN: 3PLs & FREIGHT BROKERS</div>
 
     <div class="headline-block">
-      <div class="headline">YOUR CARRIERS ARE ABOUT TO GET <div class="redact-wrap"><canvas class="redact-b" id="noiseCanvas"></canvas><span class="redact-a" id="glitchWord">SCORED</span></div></div>
+      <div class="headline">YOUR CARRIERS ARE</div>
+      <div class="headline">ABOUT TO GET <div class="redact-wrap"><canvas class="redact-b" id="noiseCanvas"></canvas><span class="redact-a" id="glitchWord">SCORED</span></div></div>
     </div>
 
     <div class="countdown-block">
@@ -716,7 +717,7 @@ function submitToMailchimp(email, onSuccess, onError) {
 function handleSubmit() {
   const input = document.getElementById('emailInput');
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value.trim())) {
-    input.style.outline = '2px solid #ff6b35';
+    input.style.outline = '2px solid #E5FF00';
     input.focus();
     setTimeout(() => input.style.outline = '', 1000);
     return;
@@ -741,7 +742,7 @@ function handleSubmit() {
 function handleSlideoutSubmit() {
   const input = document.getElementById('slideoutEmail');
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value.trim())) {
-    input.style.outline = '2px solid #ff6b35';
+    input.style.outline = '2px solid #E5FF00';
     input.focus();
     setTimeout(() => input.style.outline = '', 1000);
     return;
@@ -809,11 +810,11 @@ if (!sessionStorage.getItem('slideoutDismissed')) {
     right: -360px;
     width: 320px;
     background: #0b0d12;
-    border: 1px solid rgba(0,212,255,0.25);
+    border: 1px solid rgba(0,229,255,0.25);
     padding: 28px 24px 24px;
     z-index: 200;
     transition: right 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-    box-shadow: -8px 0 40px rgba(0,0,0,0.6), 0 0 30px rgba(0,212,255,0.05);
+    box-shadow: -8px 0 40px rgba(0,0,0,0.6), 0 0 30px rgba(0,229,255,0.05);
   }
   .slideout.visible { right: 24px; }
   .slideout-close {
@@ -826,7 +827,7 @@ if (!sessionStorage.getItem('slideoutDismissed')) {
   }
   .slideout-close:hover { color: var(--text); }
   .slideout-tag {
-    font-family: 'DM Mono', monospace;
+    font-family: 'Space Mono', monospace;
     font-size: 9px;
     color: var(--cyan);
     letter-spacing: 0.2em;
@@ -850,7 +851,7 @@ if (!sessionStorage.getItem('slideoutDismissed')) {
   }
   .slideout-row {
     display: flex;
-    border: 1px solid rgba(0,212,255,0.25);
+    border: 1px solid rgba(0,229,255,0.25);
     background: var(--surface);
     transition: border-color 0.2s, box-shadow 0.2s;
     margin-bottom: 10px;
@@ -875,7 +876,7 @@ if (!sessionStorage.getItem('slideoutDismissed')) {
   }
   .slideout-row button:hover { background: #33ddff; }
   .slideout-note {
-    font-family: 'DM Mono', monospace; font-size: 9px;
+    font-family: 'Space Mono', monospace; font-size: 9px;
     color: var(--muted); letter-spacing: 0.1em;
   }
   .slideout-success {
